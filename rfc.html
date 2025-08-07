@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RFC Learning Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f5f7fa;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: #2d3748;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .header p {
+            color: #718096;
+            font-size: 1.1rem;
+            margin: 5px 0 0 0;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #4299e1;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #3182ce;
+            transform: translateY(-1px);
+        }
+
+        .btn-success {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #38a169;
+        }
+
+        .btn-secondary {
+            background: #a0aec0;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #718096;
+        }
+
+        .btn-danger {
+            background: #f56565;
+            color: white;
+            padding: 8px;
+            font-size: 14px;
+        }
+
+        .btn-danger:hover {
+            background: #e53e3e;
+        }
+
+        .progress-section {
+            margin-top: 20px;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .progress-label {
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .progress-text {
+            color: #718096;
+        }
+
+        .progress-bar-container {
+            background: #e2e8f0;
+            border-radius: 50px;
+            height: 12px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #48bb78, #38a169);
+            height: 100%;
+            border-radius: 50px;
+            transition: width 0.8s ease-out;
+        }
+
+        .add-form {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .add-form.hidden {
+            display: none;
+        }
+
+        .add-form h3 {
+            color: #2d3748;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .form-control {
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #4299e1;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .category-card {
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .category-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .category-title-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .category-icon {
+            font-size: 2rem;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            border-radius: 12px;
+        }
+
+        .category-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .category-count {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .rfc-list {
+            padding: 30px;
+        }
+
+        .rfc-item {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .rfc-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .rfc-item.completed {
+            background: #f0fff4;
+            border-color: #68d391;
+        }
+
+        .rfc-checkbox {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            margin: 0;
+        }
+
+        .rfc-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .rfc-title-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+
+        .priority-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .priority-1 {
+            background: #fed7d7;
+            color: #c53030;
+        }
+
+        .priority-2 {
+            background: #feebc8;
+            color: #dd6b20;
+        }
+
+        .priority-3 {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .rfc-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2d3748;
+            text-decoration: none;
+            flex: 1;
+        }
+
+        .rfc-title:hover {
+            color: #4299e1;
+        }
+
+        .rfc-id {
+            background: #edf2f7;
+            color: #4a5568;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+        }
+
+        .rfc-description {
+            color: #718096;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .rfc-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .rfc-link {
+            background: #4299e1;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+
+        .rfc-link:hover {
+            background: #3182ce;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .header-top {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .rfc-item {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 15px;
+            }
+
+            .rfc-title-row {
+                justify-content: space-between;
+            }
+
+            .rfc-actions {
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-top">
+                <div>
+                    <h1>RFC Learning Dashboard</h1>
+                    <p>Master the protocols for effective bug bounty hunting</p>
+                </div>
+                <button id="addBtn" class="btn btn-primary">
+                    <span>+</span> Ajouter RFC
+                </button>
+            </div>
+            
+            <div class="progress-section">
+                <div class="progress-info">
+                    <span class="progress-label">Progression Globale</span>
+                    <span id="progressText" class="progress-text">0/34 RFCs (0%)</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div id="progressBar" class="progress-bar" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Form -->
+        <div id="addForm" class="add-form hidden">
+            <h3>Ajouter un nouveau RFC</h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="rfcId">RFC ID</label>
+                    <input type="text" id="rfcId" class="form-control" placeholder="rfc7231 ou 7231">
+                </div>
+                <div class="form-group">
+                    <label for="rfcTitle">Titre</label>
+                    <input type="text" id="rfcTitle" class="form-control" placeholder="HTTP/1.1 Semantics">
+                </div>
+                <div class="form-group">
+                    <label for="rfcCategory">Catégorie</label>
+                    <input type="text" id="rfcCategory" class="form-control" placeholder="HTTP Essentials">
+                </div>
+                <div class="form-group">
+                    <label for="rfcPriority">Priorité</label>
+                    <select id="rfcPriority" class="form-control">
+                        <option value="1">Priorité 1 (Critique)</option>
+                        <option value="2">Priorité 2 (Important)</option>
+                        <option value="3">Priorité 3 (Optionnel)</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="rfcDescription">Description</label>
+                <input type="text" id="rfcDescription" class="form-control" placeholder="Methods, status codes, headers">
+            </div>
+            
+            <div class="form-actions">
+                <button id="confirmAdd" class="btn btn-success">Ajouter</button>
+                <button id="cancelAdd" class="btn btn-secondary">Annuler</button>
+            </div>
+        </div>
+
+        <!-- Categories -->
+        <div id="categories"></div>
+    </div>
+
+    <script>
+        // RFC data
+        const initialRFCs = {
+            'HTTP Essentials': [
+                { id: 'rfc7231', title: 'HTTP/1.1 Semantics', priority: 1, description: 'Methods, status codes, headers', url: 'https://www.rfcreader.com/#rfc7231' },
+                { id: 'rfc6265', title: 'HTTP Cookies', priority: 1, description: 'Session management, SameSite', url: 'https://www.rfcreader.com/#rfc6265' },
+                { id: 'rfc7230', title: 'HTTP/1.1 Message Syntax', priority: 1, description: 'Structure des messages HTTP', url: 'https://www.rfcreader.com/#rfc7230' },
+                { id: 'rfc7232', title: 'HTTP/1.1 Conditional Requests', priority: 2, description: 'If-Modified-Since, ETags', url: 'https://www.rfcreader.com/#rfc7232' },
+                { id: 'rfc7233', title: 'HTTP/1.1 Range Requests', priority: 2, description: 'Partial content, byte ranges', url: 'https://www.rfcreader.com/#rfc7233' },
+                { id: 'rfc7234', title: 'HTTP/1.1 Caching', priority: 2, description: 'Cache-Control, Expires', url: 'https://www.rfcreader.com/#rfc7234' },
+                { id: 'rfc7235', title: 'HTTP/1.1 Authentication', priority: 1, description: 'WWW-Authenticate, Authorization', url: 'https://www.rfcreader.com/#rfc7235' },
+                { id: 'rfc7540', title: 'HTTP/2', priority: 2, description: 'Multiplexing, server push', url: 'https://www.rfcreader.com/#rfc7540' },
+                { id: 'rfc9110', title: 'HTTP Semantics', priority: 2, description: 'Updated HTTP core semantics', url: 'https://www.rfcreader.com/#rfc9110' }
+            ],
+            'Web Security': [
+                { id: 'rfc6454', title: 'Same-Origin Policy', priority: 1, description: 'CORS, origin restrictions', url: 'https://www.rfcreader.com/#rfc6454' },
+                { id: 'rfc7519', title: 'JSON Web Token (JWT)', priority: 1, description: 'Token structure, validation', url: 'https://www.rfcreader.com/#rfc7519' },
+                { id: 'rfc6750', title: 'OAuth 2.0 Bearer Token', priority: 1, description: 'API authentication', url: 'https://www.rfcreader.com/#rfc6750' },
+                { id: 'rfc6749', title: 'OAuth 2.0 Authorization', priority: 1, description: 'Authorization flows', url: 'https://www.rfcreader.com/#rfc6749' },
+                { id: 'rfc7617', title: 'Basic Authentication', priority: 2, description: 'HTTP auth scheme', url: 'https://www.rfcreader.com/#rfc7617' },
+                { id: 'rfc7636', title: 'PKCE', priority: 2, description: 'OAuth code challenge', url: 'https://www.rfcreader.com/#rfc7636' },
+                { id: 'rfc8252', title: 'OAuth Native Apps', priority: 3, description: 'Mobile app security', url: 'https://www.rfcreader.com/#rfc8252' }
+            ],
+            'Transport Security': [
+                { id: 'rfc8446', title: 'TLS 1.3', priority: 1, description: 'Encryption, handshake', url: 'https://www.rfcreader.com/#rfc8446' },
+                { id: 'rfc6797', title: 'HSTS', priority: 1, description: 'Force HTTPS', url: 'https://www.rfcreader.com/#rfc6797' },
+                { id: 'rfc5246', title: 'TLS 1.2', priority: 2, description: 'Previous TLS version', url: 'https://www.rfcreader.com/#rfc5246' },
+                { id: 'rfc7469', title: 'Certificate Pinning', priority: 2, description: 'Cert validation', url: 'https://www.rfcreader.com/#rfc7469' },
+                { id: 'rfc6066', title: 'TLS Extensions', priority: 3, description: 'SNI, ALPN extensions', url: 'https://www.rfcreader.com/#rfc6066' }
+            ],
+            'Data Formats & Encoding': [
+                { id: 'rfc7159', title: 'JSON', priority: 1, description: 'Parsing, injection risks', url: 'https://www.rfcreader.com/#rfc7159' },
+                { id: 'rfc3986', title: 'URI', priority: 1, description: 'URL structure, encoding', url: 'https://www.rfcreader.com/#rfc3986' },
+                { id: 'rfc4648', title: 'Base64', priority: 2, description: 'Encoding schemes', url: 'https://www.rfcreader.com/#rfc4648' },
+                { id: 'rfc3629', title: 'UTF-8', priority: 2, description: 'Unicode encoding', url: 'https://www.rfcreader.com/#rfc3629' },
+                { id: 'rfc4180', title: 'CSV', priority: 3, description: 'Comma-separated values', url: 'https://www.rfcreader.com/#rfc4180' },
+                { id: 'rfc7049', title: 'CBOR', priority: 3, description: 'Concise binary encoding', url: 'https://www.rfcreader.com/#rfc7049' }
+            ],
+            'Network & DNS': [
+                { id: 'rfc1035', title: 'DNS', priority: 1, description: 'Domain resolution', url: 'https://www.rfcreader.com/#rfc1035' },
+                { id: 'rfc8484', title: 'DNS over HTTPS', priority: 2, description: 'DoH protocol', url: 'https://www.rfcreader.com/#rfc8484' },
+                { id: 'rfc1034', title: 'DNS Concepts', priority: 2, description: 'Domain name concepts', url: 'https://www.rfcreader.com/#rfc1034' },
+                { id: 'rfc6891', title: 'DNS EDNS(0)', priority: 3, description: 'DNS extensions', url: 'https://www.rfcreader.com/#rfc6891' }
+            ],
+            'Email & Communication': [
+                { id: 'rfc5321', title: 'SMTP', priority: 2, description: 'Mail transfer protocol', url: 'https://www.rfcreader.com/#rfc5321' },
+                { id: 'rfc5322', title: 'Internet Message Format', priority: 2, description: 'Email structure', url: 'https://www.rfcreader.com/#rfc5322' },
+                { id: 'rfc2045', title: 'MIME Part 1', priority: 3, description: 'Multipurpose mail extensions', url: 'https://www.rfcreader.com/#rfc2045' }
+            ]
+        };
+
+        let rfcs = JSON.parse(JSON.stringify(initialRFCs));
+        let completedRFCs = new Set();
+
+        // Load data
+        function loadData() {
+            const saved = localStorage.getItem('rfc-progress');
+            if (saved) {
+                try {
+                    completedRFCs = new Set(JSON.parse(saved));
+                } catch (e) {
+                    completedRFCs = new Set();
+                }
+            }
+            
+            const savedRFCs = localStorage.getItem('rfc-data');
+            if (savedRFCs) {
+                try {
+                    const parsedRFCs = JSON.parse(savedRFCs);
+                    Object.keys(parsedRFCs).forEach(category => {
+                        if (!rfcs[category]) {
+                            rfcs[category] = parsedRFCs[category];
+                        } else {
+                            const existingIds = new Set(rfcs[category].map(rfc => rfc.id));
+                            parsedRFCs[category].forEach(rfc => {
+                                if (!existingIds.has(rfc.id)) {
+                                    rfcs[category].push(rfc);
+                                }
+                            });
+                        }
+                    });
+                } catch (e) {
+                    console.log('Error loading RFC data');
+                }
+            }
+        }
+
+        // Save data
+        function saveData() {
+            localStorage.setItem('rfc-progress', JSON.stringify([...completedRFCs]));
+            localStorage.setItem('rfc-data', JSON.stringify(rfcs));
+        }
+
+        // Update progress
+        function updateProgress() {
+            const total = Object.values(rfcs).flat().length;
+            const completed = completedRFCs.size;
+            const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+            
+            document.getElementById('progressBar').style.width = `${percentage}%`;
+            document.getElementById('progressText').textContent = `${completed}/${total} RFCs (${percentage}%)`;
+        }
+
+        // Toggle RFC completion
+        function toggleRFC(rfcId) {
+            if (completedRFCs.has(rfcId)) {
+                completedRFCs.delete(rfcId);
+            } else {
+                completedRFCs.add(rfcId);
+            }
+            saveData();
+            renderDashboard();
+        }
+
+        // Delete RFC
+        function deleteRFC(category, rfcId) {
+            rfcs[category] = rfcs[category].filter(rfc => rfc.id !== rfcId);
+            if (rfcs[category].length === 0) {
+                delete rfcs[category];
+            }
+            completedRFCs.delete(rfcId);
+            saveData();
+            renderDashboard();
+        }
+
+        // Add custom RFC
+        function addCustomRFC() {
+            const id = document.getElementById('rfcId').value.trim();
+            const title = document.getElementById('rfcTitle').value.trim();
+            const category = document.getElementById('rfcCategory').value.trim();
+            const description = document.getElementById('rfcDescription').value.trim();
+            const priority = parseInt(document.getElementById('rfcPriority').value);
+
+            if (!id || !title || !category) return;
+
+            const rfcNumber = id.toLowerCase().replace('rfc', '');
+            const url = `https://www.rfcreader.com/#rfc${rfcNumber}`;
+
+            if (!rfcs[category]) {
+                rfcs[category] = [];
+            }
+
+            rfcs[category].push({
+                id: id.toLowerCase(),
+                title,
+                priority,
+                description,
+                url
+            });
+
+            // Clear form
+            document.getElementById('rfcId').value = '';
+            document.getElementById('rfcTitle').value = '';
+            document.getElementById('rfcCategory').value = '';
+            document.getElementById('rfcDescription').value = '';
+            document.getElementById('addForm').classList.add('hidden');
+
+            saveData();
+            renderDashboard();
+        }
+
+        // Get category icon
+        function getCategoryIcon(category) {
+            const icons = {
+                'HTTP Essentials': '🌐',
+                'Web Security': '🛡️',
+                'Transport Security': '⚡',
+                'Data Formats & Encoding': '💻',
+                'Network & DNS': '📚',
+                'Email & Communication': '📧'
+            };
+            return icons[category] || '📚';
+        }
+
+        // Render dashboard
+        function renderDashboard() {
+            const container = document.getElementById('categories');
+            container.innerHTML = '';
+
+            Object.entries(rfcs).forEach(([category, categoryRFCs]) => {
+                const categoryCompleted = categoryRFCs.filter(rfc => completedRFCs.has(rfc.id)).length;
+                const categoryTotal = categoryRFCs.length;
+                const icon = getCategoryIcon(category);
+
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'category-card';
+                
+                categoryDiv.innerHTML = `
+                    <div class="category-header">
+                        <div class="category-title-section">
+                            <div class="category-icon">${icon}</div>
+                            <div>
+                                <div class="category-title">${category}</div>
+                            </div>
+                        </div>
+                        <div class="category-count">${categoryCompleted}/${categoryTotal}</div>
+                    </div>
+                    
+                    <div class="rfc-list">
+                        ${categoryRFCs
+                            .sort((a, b) => a.priority - b.priority)
+                            .map(rfc => `
+                                <div class="rfc-item ${completedRFCs.has(rfc.id) ? 'completed' : ''}">
+                                    <input type="checkbox" ${completedRFCs.has(rfc.id) ? 'checked' : ''} 
+                                           onclick="toggleRFC('${rfc.id}')" class="rfc-checkbox">
+                                    
+                                    <div class="rfc-content">
+                                        <div class="rfc-title-row">
+                                            <span class="priority-badge priority-${rfc.priority}">P${rfc.priority}</span>
+                                            <a href="${rfc.url}" target="_blank" class="rfc-title">${rfc.title}</a>
+                                            <span class="rfc-id">${rfc.id.toUpperCase()}</span>
+                                        </div>
+                                        <div class="rfc-description">${rfc.description}</div>
+                                    </div>
+                                    
+                                    <div class="rfc-actions">
+                                        <a href="${rfc.url}" target="_blank" class="rfc-link">📖 Lire</a>
+                                        <button onclick="deleteRFC('${category}', '${rfc.id}')" class="btn btn-danger" title="Supprimer">🗑️</button>
+                                    </div>
+                                </div>
+                            `).join('')}
+                    </div>
+                `;
+                
+                container.appendChild(categoryDiv);
+            });
+
+            updateProgress();
+        }
+
+        // Event listeners
+        document.getElementById('addBtn').addEventListener('click', () => {
+            document.getElementById('addForm').classList.toggle('hidden');
+        });
+
+        document.getElementById('confirmAdd').addEventListener('click', addCustomRFC);
+
+        document.getElementById('cancelAdd').addEventListener('click', () => {
+            document.getElementById('addForm').classList.add('hidden');
+        });
+
+        // Auto-generate URL on RFC ID input
+        document.getElementById('rfcId').addEventListener('input', function(e) {
+            const value = e.target.value;
+            const rfcNumber = value.toLowerCase().replace('rfc', '');
+            const autoUrl = `https://www.rfcreader.com/#rfc${rfcNumber}`;
+            // Could display this URL somewhere if needed
+        });
+
+        // Initialize
+        loadData();
+        renderDashboard();
+    </script>
+</body>
+</html>
